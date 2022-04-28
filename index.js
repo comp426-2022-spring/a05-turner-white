@@ -38,7 +38,7 @@ if (args.help || args.h) {
 const HTTP_PORT = args.port || process.env.PORT || 5555
 app.use(express.urlencoded({extended: true}));
 app.use(express.json());
-app.use(express.static('/public'));
+app.use(express.static('./public'));
 
 const server = app.listen(HTTP_PORT, () => {
     console.log('App listening on port %PORT%'.replace('%PORT%',HTTP_PORT))
@@ -74,6 +74,10 @@ if (args.log == "true" || args.log == null) {
 }
 
 //Check status code endpoint
+// app.get('/', (req,res) => {
+//     res.status(200);
+
+// })
 app.get('/app/', (req,res) => {
     res.statusCode = 200;
     res.statusMessage = "OK";
@@ -83,20 +87,16 @@ app.get('/app/', (req,res) => {
 
 //Endpoint that returns JSON of flip function result
 app.get('/app/flip/', (req,res) => {
-    res.statusCode = 200;
     let flip = coinFlip()
-    res.json({flip: flip})
-    res.writeHead(res.statusCode, {'Content-Type' : 'application/json' });
+    res.json({flip: flip}).status(200)
 })
 //Endpoint that returns JSON of flip array (num) & summary
-app.post('/app/flips/coins/', (req, res) => {
-    res.statusCode = 200;
+app.post('/app/flip/coins/', (req, res, next) => {
     var number = req.body.number;
     let raw = coinFlips(number)
     let summary = countFlips(raw)
-    res.json({ raw: raw, summary: summary})
-    //res.json(summary)
-    res.writeHead(res.statusCode, {'Content-Type' : 'application/json' });   
+    res.json({ raw: raw, summary: summary}).status(200)
+    //res.json(summary) 
 })
 //Endpoint that returns the result of calling a coin
 app.post('/app/flip/call/', (req, res) => {
