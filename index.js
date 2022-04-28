@@ -38,6 +38,7 @@ if (args.help || args.h) {
 const HTTP_PORT = args.port || process.env.PORT || 5555
 app.use(express.urlencoded({extended: true}));
 app.use(express.json());
+app.use(express.static('/public'));
 
 const server = app.listen(HTTP_PORT, () => {
     console.log('App listening on port %PORT%'.replace('%PORT%',HTTP_PORT))
@@ -71,6 +72,62 @@ if (args.log == "true" || args.log == null) {
     const accessLog = fs.createWriteStream('access.log', { flags: 'a' })
     app.use(morgan('combined', { stream: accessLog }))
 }
+
+//Check status code endpoint
+app.get('/app/', (req,res) => {
+    res.statusCode = 200;
+    res.statusMessage = "OK";
+    res.writeHead(res.statusCode, {'Content-Type' : 'text/plain' });
+    res.end(res.statusCode+ ' ' + res.statusMessage)
+});
+
+//Endpoint that returns JSON of flip function result
+app.get('/app/flip/', (req,res) => {
+    res.statusCode = 200;
+    let flip = coinFlip()
+    res.json({flip: flip})
+    res.writeHead(res.statusCode, {'Content-Type' : 'application/json' });
+})
+//Endpoint that returns JSON of flip array (num) & summary
+app.post('/app/flips/coins/', (req, res) => {
+    res.statusCode = 200;
+    var number = req.body.number;
+    let raw = coinFlips(number)
+    let summary = countFlips(raw)
+    res.json({ raw: raw, summary: summary})
+    //res.json(summary)
+    res.writeHead(res.statusCode, {'Content-Type' : 'application/json' });   
+})
+//Endpoint that returns the result of calling a coin
+app.post('/app/flip/call/', (req, res) => {
+    res.statusCode = 200;
+    let result = flipACoin(req.body.guess)
+    res.send(result)
+    res.writeHead(res.statusCode, {'Content-Type' : 'text/plain' });
+})
+//If Debugs
+if (args['debug'] == "true" || args['debug'] == true) {
+    app.get('/app/log/access', (req, res) => {
+        try {
+            const stmt = db.prepare('SELECT * FROM accesslog').all()
+            res.status(200);
+            res.json(stmt)
+        } catch {
+            console.error(e)
+        }
+    });
+    app.get('/app/error', (req, res) => {
+        throw new Error('Error test successful') // Express will catch this on its own.
+    });
+}
+app.use(function(req,res){
+    res.status(404).json({"message":"404 NOT FOUND"})
+});
+process.on('SIGTERM', () => {
+    server.close(() => {
+        console.log('Server terminated')
+    })
+})
 //Functions
 function coinFlip() {
     return (Math.random() > 0.5) ? "heads" : "tails"
@@ -112,71 +169,3 @@ function flipACoin(call) {
     }
     return {call: call, flip: flip, result: res}
 }
-
-//Check status code endpoint
-app.get('/app/', (req,res) => {
-    res.statusCode = 200;
-    res.statusMessage = "OK";
-    res.writeHead(res.statusCode, {'Content-Type' : 'text/plain' });
-    res.end(res.statusCode+ ' ' + res.statusMessage)
-});
-
-//Endpoint that returns JSON of flip function result
-app.get('/app/flip/', (req,res) => {
-    res.statusCode = 200;
-    let flip = coinFlip()
-    res.json({flip: flip})
-    res.writeHead(res.statusCode, {'Content-Type' : 'application/json' });
-})
-//Endpoint that returns JSON of flip array (num) & summary
-app.get('/app/flips/:number', (req, res) => {
-    res.statusCode = 200;
-    var number = req.params.number;
-    let raw = coinFlips(number)
-    let summary = countFlips(raw)
-    res.json({ raw: raw, summary: summary})
-    //res.json(summary)
-    res.writeHead(res.statusCode, {'Content-Type' : 'application/json' });
-    
-    
-})
-//Endpoint that returns the result of calling heads
-app.get('/app/flip/call/heads', (req, res) => {
-    res.statusCode = 200;
-    let result = flipACoin('heads')
-    res.send(result)
-    res.writeHead(res.statusCode, {'Content-Type' : 'text/plain' });
-})
-//Endpoint that returns the result of calling tails
-app.get('/app/flip/call/tails', (req, res) => {
-    res.statusCode = 200;
-    let result = flipACoin('tails')
-    res.send(result)
-    res.writeHead(res.statusCode, {'Content-Type' : 'text/plain' });
-})
-
-//If Debugs
-if (args['debug'] == "true" || args['debug'] == true) {
-    app.get('/app/log/access', (req, res) => {
-        try {
-            const stmt = db.prepare('SELECT * FROM accesslog').all()
-            res.status(200);
-            res.json(stmt)
-        } catch {
-            console.error(e)
-        }
-    });
-    app.get('/app/error', (req, res) => {
-        throw new Error('Error test successful') // Express will catch this on its own.
-    });
-}
-
-app.use(function(req,res){
-    res.status(404).json({"message":"404 NOT FOUND"})
-});
-
-process.on('SIGTERM', () => {
-    server.close(() => {
-        console.log('Server terminated')
-    })
-})
