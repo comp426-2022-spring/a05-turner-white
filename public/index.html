@@ -27,13 +27,14 @@
   </head>
   <body>
     <nav>
-      <button id="homenav">Home</button>
-      <button id="singlenav">Flip one coin</button>
-      <button id="multinav">Flip multiple coins</button>
-      <button id="guessnav">Guess the result</button>
+      <button id="homenav" onclick="detectButton('home')">Home</button>
+      <button id="singlenav" onclick = "detectButton('singleFlip')">Flip one coin</button>
+      <button id="multinav" onclick = "detectButton('multiFlip')">Flip multiple coins</button>
+      <button id="guessnav" onclick = "detectButton('guess')">Guess the result</button>
     </nav>
     <div id="home">
-      
+      <h1>Coin Flipping Game! :o</h1>
+      <p>Welcome to this simple coin-flipping website. Press the home button to return to this main page. If you want to flip one coin and see the result, click the Single Flip button. If you'd like to flip multiple coins, click the Multiple Flips button, enter your desired number of flips, and press the flip button. If you'd like to play a game, then click on the guess button and try to guess what the next coin will be. Have fun!</p>
     </div>    
     <div id="single" class="hidden">
       
