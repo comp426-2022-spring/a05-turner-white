@@ -38,7 +38,7 @@ if (args.help || args.h) {
 const HTTP_PORT = args.port || process.env.PORT || 5555
 app.use(express.urlencoded({extended: true}));
 app.use(express.json());
-app.use(express.static('./public'));
+app.use(express.static('./public/www'));
 
 const server = app.listen(HTTP_PORT, () => {
     console.log('App listening on port %PORT%'.replace('%PORT%',HTTP_PORT))
