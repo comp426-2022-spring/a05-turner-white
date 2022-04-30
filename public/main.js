@@ -25,6 +25,27 @@ function singleFlip() {
     }
 }
 
+function flipCoins() {
+    fetch('http://localhost:5000/app/flip/coins', {mode: 'post'})
+    .then(function(response) {
+        return response.json
+    }).then(function(result) {
+        console.log(result)
+
+        document.getElementById("headsResult").innerHTML = result.heads
+        document.getElementById("tailsResult").innerHTML = result.tails
+
+        document.getElementById("result").innerHTML = result.flip
+        document.getElementById("quarter").setAttribute("src", "../assets/img/" + result.flip +".png")
+
+        for (var i=0; i< result.raw.length; i++) {
+            var coin = document.createElement("img")
+            coin.setAttribute("src", "../assets/img/" + result.raw[i] + ".png")
+            coin.setAttribute("class", "smallcoin")
+        }
+    })
+}
+
 
 // Enter number and press button to activate coin flip series
 
