@@ -12,7 +12,7 @@ function singleFlip() {
     const singleCoin = document.getElementById("single")
     singleCoin.addEventListener("click", flipCoin)
     function flipCoin() {
-        const url = document.baseURI+"/app/flip/"
+        const url = document.baseURI+"app/flip/"
         fetch(url, {mode: 'cors'}).then(function(response) {
             return response.json();
         })
