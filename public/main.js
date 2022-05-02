@@ -19,7 +19,7 @@ function singleFlip() {
         .then(function(something) {
             console.log(something)
             document.getElementById("result").innerHTML=something.flip
-            document.getElementById("quarter").setAttribute("src", "/assets/img"+something.flip+".png")
+            document.getElementById("quarter").setAttribute("src", "../public/assets/img"+something.flip+".png")
             singleCoin.disbled = true
         })
     }
