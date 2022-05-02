@@ -26,8 +26,13 @@ function singleFlip() {
 }
 const flipBtn = document.getElementById("coins")
 flipBtn.addEventListener('click', flipCoins)
+const num = document.getElementById("number").value
+console.log(num)
+
 function flipCoins(e) {
-    fetch('http://localhost:5000/app/flip/coins', {mode: 'post'})
+    fetch('http://localhost:5555/app/flip/coins', {method: 'POST',body: {
+        number: num}
+    })
     .then(function(response) {
         return response.json
     }).then(function(result) {
@@ -39,7 +44,7 @@ function flipCoins(e) {
         document.getElementById("result").innerHTML = result.flip
         document.getElementById("quarter").setAttribute("src", "../assets/img/" + result.flip +".png")
 
-        for (var i=0; i< result.raw.length; i++) {
+        for (var i=0; i< result.raw.size; i++) {
             var coin = document.createElement("img")
             coin.setAttribute("src", "../assets/img/" + result.raw[i] + ".png")
             coin.setAttribute("class", "smallcoin")

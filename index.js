@@ -96,6 +96,7 @@ app.get('/app/flip/call/tails', (req, res) => {
 //Endpoint that returns JSON of flip array (num) & summary
 app.post('/app/flip/coins/', (req, res, next) => {
     var number = req.body.number;
+    console.log(number)
     let raw = coinFlips(number)
     let summary = countFlips(raw)
     res.json({ raw: raw, summary: summary}).status(200)
