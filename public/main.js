@@ -24,8 +24,9 @@ function singleFlip() {
         })
     }
 }
-
-function flipCoins() {
+const flipBtn = document.getElementById("coins")
+flipBtn.addEventListener('click', flipCoins)
+function flipCoins(e) {
     fetch('http://localhost:5000/app/flip/coins', {mode: 'post'})
     .then(function(response) {
         return response.json
@@ -59,30 +60,30 @@ function guessFlip(guess) {
         document.getElementById("guessResult")
     }) 
 }
-// Our flip many coins form
-const coins = document.getElementById("coins")
-// Add event listener for coins form
-coins.addEventListener("submit", flipCoins)
-// Create the submit handler
-async function flipCoins(event) {
-    event.preventDefault();
+// // Our flip many coins form
+// const coins = document.getElementById("coins")
+// // Add event listener for coins form
+// coins.addEventListener("submit", flipCoins)
+// // Create the submit handler
+// async function flipCoins(event) {
+//     event.preventDefault();
     
-    const endpoint = "app/flip/coins/"
-    const url = document.baseURI+endpoint
+//     const endpoint = "app/flip/coins/"
+//     const url = document.baseURI+endpoint
 
-    const formEvent = event.currentTarget
+//     const formEvent = event.currentTarget
 
-    try {
-    const formData = new FormData(formEvent);
-    const flips = await sendFlips({ url, formData });
+//     try {
+//     const formData = new FormData(formEvent);
+//     const flips = await sendFlips({ url, formData });
 
-    console.log(flips);
-    document.getElementById("heads").innerHTML = "Heads: "+flips.summary.heads;
-    document.getElementById("tails").innerHTML = "Tails: "+flips.summary.tails;
-    } catch (error) {
-    console.log(error);
-    }
-}
+//     console.log(flips);
+//     document.getElementById("heads").innerHTML = "Heads: "+flips.summary.heads;
+//     document.getElementById("tails").innerHTML = "Tails: "+flips.summary.tails;
+//     } catch (error) {
+//     console.log(error);
+//     }
+// }
 // Create a data sender
 async function sendFlips({ url, formData }) {
     const plainFormData = Object.fromEntries(formData.entries());
